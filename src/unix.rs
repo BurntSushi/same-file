@@ -8,9 +8,20 @@ use libc;
 
 #[derive(Debug)]
 pub struct Handle {
-    file: File,
+    file: Option<File>,
+    // If is_std is true, then we don't drop the corresponding File since it
+    // will close the handle.
+    is_std: bool,
     dev: u64,
     ino: u64,
+}
+
+impl Drop for Handle {
+    fn drop(&mut self) {
+        if self.is_std {
+            self.file.take().unwrap().into_raw_fd();
+        }
+    }
 }
 
 impl Eq for Handle {}
@@ -23,13 +34,13 @@ impl PartialEq for Handle {
 
 impl AsRawFd for ::Handle {
     fn as_raw_fd(&self) -> RawFd {
-        self.0.file.as_raw_fd()
+        self.0.file.as_ref().take().unwrap().as_raw_fd()
     }
 }
 
 impl IntoRawFd for ::Handle {
-    fn into_raw_fd(self) -> RawFd {
-        self.0.file.into_raw_fd()
+    fn into_raw_fd(mut self) -> RawFd {
+        self.0.file.take().unwrap().into_raw_fd()
     }
 }
 
@@ -41,29 +52,45 @@ impl Handle {
     pub fn from_file(file: File) -> io::Result<Handle> {
         let md = try!(file.metadata());
         Ok(Handle {
-            file: file,
+            file: Some(file),
+            is_std: false,
             dev: md.dev(),
             ino: md.ino(),
         })
     }
 
+    pub fn from_std(file: File) -> io::Result<Handle> {
+        Handle::from_file(file).map(|mut h| {
+            h.is_std = true;
+            h
+        })
+    }
+
     pub fn stdin() -> io::Result<Handle> {
-        Handle::from_file(unsafe { File::from_raw_fd(libc::STDIN_FILENO) })
+        Handle::from_std(unsafe { File::from_raw_fd(libc::STDIN_FILENO) })
     }
 
     pub fn stdout() -> io::Result<Handle> {
-        Handle::from_file(unsafe { File::from_raw_fd(libc::STDOUT_FILENO) })
+        Handle::from_std(unsafe { File::from_raw_fd(libc::STDOUT_FILENO) })
     }
 
     pub fn stderr() -> io::Result<Handle> {
-        Handle::from_file(unsafe { File::from_raw_fd(libc::STDERR_FILENO) })
+        Handle::from_std(unsafe { File::from_raw_fd(libc::STDERR_FILENO) })
     }
 
     pub fn as_file(&self) -> &File {
-        &self.file
+        self.file.as_ref().take().unwrap()
     }
 
     pub fn as_file_mut(&mut self) -> &mut File {
-        &mut self.file
+        self.file.as_mut().take().unwrap()
+    }
+
+    pub fn dev(&self) -> u64 {
+        self.dev
+    }
+
+    pub fn ino(&self) -> u64 {
+        self.ino
     }
 }

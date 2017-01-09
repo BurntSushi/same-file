@@ -59,7 +59,10 @@ use winapi::winerror::ERROR_INVALID_HANDLE;
 
 #[derive(Debug)]
 pub struct Handle {
-    file: File,
+    file: Option<File>,
+    // If is_std is true, then we don't drop the corresponding File since it
+    // will close the handle.
+    is_std: bool,
     key: Option<Key>,
 }
 
@@ -68,8 +71,14 @@ struct Key {
     volume: DWORD,
     idx_high: DWORD,
     idx_low: DWORD,
-    size_high: DWORD,
-    size_low: DWORD,
+}
+
+impl Drop for Handle {
+    fn drop(&mut self) {
+        if self.is_std {
+            self.file.take().unwrap().into_raw_handle();
+        }
+    }
 }
 
 impl Eq for Handle {}
@@ -85,13 +94,13 @@ impl PartialEq for Handle {
 
 impl AsRawHandle for ::Handle {
     fn as_raw_handle(&self) -> RawHandle {
-        self.0.file.as_raw_handle()
+        self.0.file.as_ref().take().unwrap().as_raw_handle()
     }
 }
 
 impl IntoRawHandle for ::Handle {
-    fn into_raw_handle(self) -> RawHandle {
-        self.0.file.into_raw_handle()
+    fn into_raw_handle(mut self) -> RawHandle {
+        self.0.file.take().unwrap().into_raw_handle()
     }
 }
 
@@ -106,12 +115,12 @@ impl Handle {
     }
 
     pub fn from_file(file: File) -> io::Result<Handle> {
-        file_info(&file).map(|info| Handle::from_file_info(file, info))
+        file_info(&file).map(|info| Handle::from_file_info(file, false, info))
     }
 
     fn from_std_handle(file: File) -> io::Result<Handle> {
         let err = match file_info(&file) {
-            Ok(info) => return Ok(Handle::from_file_info(file, info)),
+            Ok(info) => return Ok(Handle::from_file_info(file, true, info)),
             Err(err) => err,
         };
         if err.raw_os_error() == Some(ERROR_INVALID_HANDLE as i32) {
@@ -120,20 +129,23 @@ impl Handle {
             // We don't really care. The only thing we care about is that
             // this handle is never equivalent to any other handle, which is
             // accomplished by setting key to None.
-            return Ok(Handle { file: file, key: None });
+            return Ok(Handle { file: Some(file), is_std: true, key: None });
         }
         Err(err)
     }
 
-    fn from_file_info(file: File, info: BY_HANDLE_FILE_INFORMATION) -> Handle {
+    fn from_file_info(
+        file: File,
+        is_std: bool,
+        info: BY_HANDLE_FILE_INFORMATION,
+    ) -> Handle {
         Handle {
-            file: file,
+            file: Some(file),
+            is_std: is_std,
             key: Some(Key {
                 volume: info.dwVolumeSerialNumber,
                 idx_high: info.nFileIndexHigh,
                 idx_low: info.nFileIndexLow,
-                size_high: info.nFileSizeHigh,
-                size_low: info.nFileSizeLow,
             }),
         }
     }
@@ -157,11 +169,11 @@ impl Handle {
     }
 
     pub fn as_file(&self) -> &File {
-        &self.file
+        self.file.as_ref().take().unwrap()
     }
 
     pub fn as_file_mut(&mut self) -> &mut File {
-        &mut self.file
+        self.file.as_mut().take().unwrap()
     }
 }
 

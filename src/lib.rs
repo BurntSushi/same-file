@@ -121,6 +121,18 @@ impl Handle {
     pub fn as_file_mut(&mut self) -> &mut File {
         self.0.as_file_mut()
     }
+
+    /// Return the underlying device number of this handle.
+    #[cfg(unix)]
+    pub fn dev(&self) -> u64 {
+        self.0.dev()
+    }
+
+    /// Return the underlying inode number of this handle.
+    #[cfg(unix)]
+    pub fn ino(&self) -> u64 {
+        self.0.ino()
+    }
 }
 
 /// Returns true if the two file paths may correspond to the same file.

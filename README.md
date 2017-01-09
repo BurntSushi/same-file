@@ -7,7 +7,7 @@ directories are the same.
 [![Windows build status](https://ci.appveyor.com/api/projects/status/github/BurntSushi/same-file?svg=true)](https://ci.appveyor.com/project/BurntSushi/same-file)
 [![](http://meritbadge.herokuapp.com/same-file)](https://crates.io/crates/same-file)
 
-Licensed under the BSD 3-Clause.
+Dual-licensed under MIT or the [UNLICENSE](http://unlicense.org).
 
 ### Documentation
 

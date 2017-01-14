@@ -14,7 +14,6 @@ use winapi::winbase::{
     FILE_FLAG_BACKUP_SEMANTICS,
     STD_INPUT_HANDLE, STD_OUTPUT_HANDLE, STD_ERROR_HANDLE,
 };
-use winapi::winerror::ERROR_INVALID_HANDLE;
 
 // For correctness, it is critical that both file handles remain open while
 // their attributes are checked for equality. In particular, the file index
@@ -119,19 +118,15 @@ impl Handle {
     }
 
     fn from_std_handle(file: File) -> io::Result<Handle> {
-        let err = match file_info(&file) {
-            Ok(info) => return Ok(Handle::from_file_info(file, true, info)),
-            Err(err) => err,
-        };
-        if err.raw_os_error() == Some(ERROR_INVALID_HANDLE as i32) {
+        match file_info(&file) {
+            Ok(info) => Ok(Handle::from_file_info(file, true, info)),
             // In a Windows console, if there is no pipe attached to a STD
             // handle, then GetFileInformationByHandle will return an error.
             // We don't really care. The only thing we care about is that
             // this handle is never equivalent to any other handle, which is
             // accomplished by setting key to None.
-            return Ok(Handle { file: Some(file), is_std: true, key: None });
+            Err(_) => Ok(Handle { file: Some(file), is_std: true, key: None }),
         }
-        Err(err)
     }
 
     fn from_file_info(

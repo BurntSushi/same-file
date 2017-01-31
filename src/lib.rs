@@ -50,8 +50,6 @@ See `examples/is_stderr.rs` for a runnable example. Compare the output of
 
 #[cfg(windows)]
 extern crate kernel32;
-#[cfg(unix)]
-extern crate libc;
 #[cfg(windows)]
 extern crate winapi;
 
@@ -59,12 +57,12 @@ use std::fs::File;
 use std::io;
 use std::path::Path;
 
-#[cfg(unix)]
+#[cfg(any(target_os = "redox", unix))]
 use unix as imp;
 #[cfg(windows)]
 use win as imp;
 
-#[cfg(unix)]
+#[cfg(any(target_os = "redox", unix))]
 mod unix;
 #[cfg(windows)]
 mod win;
@@ -123,13 +121,13 @@ impl Handle {
     }
 
     /// Return the underlying device number of this handle.
-    #[cfg(unix)]
+    #[cfg(any(target_os = "redox", unix))]
     pub fn dev(&self) -> u64 {
         self.0.dev()
     }
 
     /// Return the underlying inode number of this handle.
-    #[cfg(unix)]
+    #[cfg(any(target_os = "redox", unix))]
     pub fn ino(&self) -> u64 {
         self.0.ino()
     }

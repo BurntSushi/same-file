@@ -4,8 +4,6 @@ use std::os::unix::fs::MetadataExt;
 use std::os::unix::io::{AsRawFd, FromRawFd, IntoRawFd, RawFd};
 use std::path::Path;
 
-use libc;
-
 #[derive(Debug)]
 pub struct Handle {
     file: Option<File>,
@@ -67,15 +65,15 @@ impl Handle {
     }
 
     pub fn stdin() -> io::Result<Handle> {
-        Handle::from_std(unsafe { File::from_raw_fd(libc::STDIN_FILENO) })
+        Handle::from_std(unsafe { File::from_raw_fd(0) })
     }
 
     pub fn stdout() -> io::Result<Handle> {
-        Handle::from_std(unsafe { File::from_raw_fd(libc::STDOUT_FILENO) })
+        Handle::from_std(unsafe { File::from_raw_fd(1) })
     }
 
     pub fn stderr() -> io::Result<Handle> {
-        Handle::from_std(unsafe { File::from_raw_fd(libc::STDERR_FILENO) })
+        Handle::from_std(unsafe { File::from_raw_fd(2) })
     }
 
     pub fn as_file(&self) -> &File {

@@ -301,4 +301,16 @@ mod tests {
         soft_link_dir(dir.join("a"), dir.join("alink")).unwrap();
         assert!(is_same_file(dir.join("a"), dir.join("alink")).unwrap());
     }
+
+    #[test]
+    fn test_send() {
+        fn assert_send<T: Send>() {}
+        assert_send::<super::Handle>();
+    }
+
+    #[test]
+    fn test_sync() {
+        fn assert_sync<T: Sync>() {}
+        assert_sync::<super::Handle>();
+    }
 }

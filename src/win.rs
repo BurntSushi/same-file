@@ -66,7 +66,7 @@ pub struct Handle {
     key: Option<Key>,
 }
 
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Debug, Eq, PartialEq, Hash)]
 struct Key {
     volume: DWORD,
     idx_high: DWORD,
@@ -106,14 +106,7 @@ impl IntoRawHandle for ::Handle {
 
 impl Hash for Handle {
     fn hash<H: Hasher>(&self, state: &mut H) {
-        match self.key {
-            Some(ref k)  =>
-                {   k.volume.hash(state);
-                    k.idx_high.hash(state);
-                    k.idx_low.hash(state);
-                },
-            None => (),
-        }
+        self.key.hash(state);
     }
 }
 

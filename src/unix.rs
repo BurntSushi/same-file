@@ -1,4 +1,5 @@
 use std::fs::{File, OpenOptions};
+use std::hash::{Hash, Hasher};
 use std::io;
 use std::os::unix::fs::MetadataExt;
 use std::os::unix::io::{AsRawFd, FromRawFd, IntoRawFd, RawFd};
@@ -39,6 +40,13 @@ impl AsRawFd for ::Handle {
 impl IntoRawFd for ::Handle {
     fn into_raw_fd(mut self) -> RawFd {
         self.0.file.take().unwrap().into_raw_fd()
+    }
+}
+
+impl Hash for Handle {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.dev.hash(state);
+        self.ino.hash(state);
     }
 }
 

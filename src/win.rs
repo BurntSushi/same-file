@@ -1,4 +1,5 @@
 use std::fs::{File, OpenOptions};
+use std::hash::{Hash, Hasher};
 use std::io;
 use std::mem;
 use std::os::windows::fs::OpenOptionsExt;
@@ -100,6 +101,19 @@ impl AsRawHandle for ::Handle {
 impl IntoRawHandle for ::Handle {
     fn into_raw_handle(mut self) -> RawHandle {
         self.0.file.take().unwrap().into_raw_handle()
+    }
+}
+
+impl Hash for Handle {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        match self.key {
+            Some(ref k)  =>
+                {   k.volume.hash(state);
+                    k.idx_high.hash(state);
+                    k.idx_low.hash(state);
+                },
+            None => (),
+        }
     }
 }
 

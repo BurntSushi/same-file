@@ -135,12 +135,15 @@ impl Handle {
 
 /// Returns true if the two file paths may correspond to the same file.
 ///
-/// If there was a problem accessing either file path, then an error is
-/// returned.
-///
 /// Note that it's possible for this to produce a false positive on some
 /// platforms. Namely, this can return true even if the two file paths *don't*
 /// resolve to the same file.
+/// # Errors
+/// This function will return an [`io::Error`] if any of the two paths cannot
+/// be opened. The most common reasons for this are: the path does not exist,
+/// or there were not enough permissions.
+///
+/// [`io::Error`]: https://doc.rust-lang.org/std/io/struct.Error.html
 ///
 /// # Example
 ///

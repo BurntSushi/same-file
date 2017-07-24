@@ -2,7 +2,7 @@
 This crate provides a safe and simple **cross platform** way to determine
 whether two file paths refer to the same file or directory.
 
-Most uses of this crate should be limited to the top-level `is_same_file`
+Most uses of this crate should be limited to the top-level [`is_same_file`]
 function, which takes two file paths and returns true if they refer to the
 same file or directory:
 
@@ -20,7 +20,7 @@ assert!(is_same_file("/bin/sh", "/usr/bin/sh")?);
 # }
 ```
 
-Additionally, this crate provides a `Handle` type that permits a more efficient
+Additionally, this crate provides a [`Handle`] type that permits a more efficient
 equality check depending on your access pattern. For example, if one wanted to
 checked whether any path in a list of paths corresponded to the process' stdout
 handle, then one could build a handle once for stdout. The equality check for
@@ -54,8 +54,15 @@ for candidate in candidates {
 # }
 ```
 
-See `examples/is_stderr.rs` for a runnable example. Compare the output of
-`cargo run is_stderr 2> examples/stderr` and `cargo run is_stderr`.
+See [`examples/is_stderr.rs`] for a runnable example and compare the output of:
+
+- `cargo run is_stderr 2> examples/stderr` and
+- `cargo run is_stderr`.
+
+[`is_same_file`]: fn.is_same_file.html
+[`Handle`]: struct.Handle.html
+[`examples/is_stderr.rs`]: https://github.com/BurntSushi/same-file/blob/master/examples/is_same_file.rs
+
 */
 
 #![deny(missing_docs)]

@@ -7,11 +7,17 @@ function, which takes two file paths and returns true if they refer to the
 same file or directory:
 
 ```rust,no_run
-# fn example() -> ::std::io::Result<()> {
+# use std::error::Error;
 use same_file::is_same_file;
 
-assert!(try!(is_same_file("/bin/sh", "/usr/bin/sh")));
-# Ok(()) } example().unwrap();
+# fn try_main() -> Result<(), Box<Error>> {
+assert!(is_same_file("/bin/sh", "/usr/bin/sh")?);
+#    Ok(()) 
+# }
+#
+# fn main() {
+#    try_main().unwrap();
+# }
 ```
 
 Additionally, this crate provides a `Handle` type that permits a more efficient
@@ -22,24 +28,30 @@ each file in the list then only requires one stat call instead of two. The code
 might look like this:
 
 ```rust,no_run
-# fn example() -> ::std::io::Result<()> {
+# use std::error::Error;
 use same_file::Handle;
 
+# fn try_main() -> Result<(), Box<Error>> {
 let candidates = &[
     "examples/is_same_file.rs",
     "examples/is_stderr.rs",
     "examples/stderr",
 ];
-let stdout_handle = try!(Handle::stdout());
+let stdout_handle = Handle::stdout()?;
 for candidate in candidates {
-    let handle = try!(Handle::from_path(candidate));
+    let handle = Handle::from_path(candidate)?;
     if stdout_handle == handle {
         println!("{:?} is stdout!", candidate);
     } else {
         println!("{:?} is NOT stdout!", candidate);
     }
 }
-# Ok(()) } example().unwrap();
+#    Ok(()) 
+# }
+# 
+# fn main() {
+#     try_main().unwrap();
+# }
 ```
 
 See `examples/is_stderr.rs` for a runnable example. Compare the output of

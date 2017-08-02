@@ -76,6 +76,8 @@ struct Key {
 impl Drop for Handle {
     fn drop(&mut self) {
         if self.is_std {
+            // unwrap() will not panic. Since we were able to open an
+            // std stream successfully, then `file` is guaranteed to be Some()
             self.file.take().unwrap().into_raw_handle();
         }
     }
@@ -94,12 +96,16 @@ impl PartialEq for Handle {
 
 impl AsRawHandle for ::Handle {
     fn as_raw_handle(&self) -> RawHandle {
+        // unwrap() will not panic. Since we were able to open the
+        // file successfully, then `file` is guaranteed to be Some()
         self.0.file.as_ref().take().unwrap().as_raw_handle()
     }
 }
 
 impl IntoRawHandle for ::Handle {
     fn into_raw_handle(mut self) -> RawHandle {
+        // unwrap() will not panic. Since we were able to open the
+        // file successfully, then `file` is guaranteed to be Some()
         self.0.file.take().unwrap().into_raw_handle()
     }
 }
@@ -171,10 +177,14 @@ impl Handle {
     }
 
     pub fn as_file(&self) -> &File {
+        // unwrap() will not panic. Since we were able to open the
+        // file successfully, then `file` is guaranteed to be Some()
         self.file.as_ref().take().unwrap()
     }
 
     pub fn as_file_mut(&mut self) -> &mut File {
+        // unwrap() will not panic. Since we were able to open the
+        // file successfully, then `file` is guaranteed to be Some()
         self.file.as_mut().take().unwrap()
     }
 }

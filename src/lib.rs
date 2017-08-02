@@ -65,6 +65,7 @@ See [`examples/is_stderr.rs`] for a runnable example and compare the output of:
 
 */
 
+#![doc(html_root_url = "https://docs.rs/same-file/1.0.0")]
 #![deny(missing_docs)]
 
 #[cfg(windows)]

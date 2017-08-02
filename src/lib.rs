@@ -325,12 +325,16 @@ impl Handle {
     }
 
     /// Return the underlying device number of this handle.
+    /// 
+    /// Note that this only works on unix platforms.
     #[cfg(any(target_os = "redox", unix))]
     pub fn dev(&self) -> u64 {
         self.0.dev()
     }
 
     /// Return the underlying inode number of this handle.
+    /// 
+    /// Note that this only works on unix platforms.
     #[cfg(any(target_os = "redox", unix))]
     pub fn ino(&self) -> u64 {
         self.0.ino()

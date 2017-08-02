@@ -18,6 +18,8 @@ pub struct Handle {
 impl Drop for Handle {
     fn drop(&mut self) {
         if self.is_std {
+            // unwrap() will not panic. Since we were able to open an
+            // std stream successfully, then `file` is guaranteed to be Some()
             self.file.take().unwrap().into_raw_fd();
         }
     }
@@ -33,12 +35,16 @@ impl PartialEq for Handle {
 
 impl AsRawFd for ::Handle {
     fn as_raw_fd(&self) -> RawFd {
+        // unwrap() will not panic. Since we were able to open the
+        // file successfully, then `file` is guaranteed to be Some()
         self.0.file.as_ref().take().unwrap().as_raw_fd()
     }
 }
 
 impl IntoRawFd for ::Handle {
     fn into_raw_fd(mut self) -> RawFd {
+        // unwrap() will not panic. Since we were able to open the
+        // file successfully, then `file` is guaranteed to be Some()
         self.0.file.take().unwrap().into_raw_fd()
     }
 }
@@ -85,10 +91,14 @@ impl Handle {
     }
 
     pub fn as_file(&self) -> &File {
+        // unwrap() will not panic. Since we were able to open the
+        // file successfully, then `file` is guaranteed to be Some()
         self.file.as_ref().take().unwrap()
     }
 
     pub fn as_file_mut(&mut self) -> &mut File {
+        // unwrap() will not panic. Since we were able to open the
+        // file successfully, then `file` is guaranteed to be Some()
         self.file.as_mut().take().unwrap()
     }
 

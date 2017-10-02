@@ -22,7 +22,7 @@ assert!(is_same_file("/bin/sh", "/usr/bin/sh")?);
 
 Additionally, this crate provides a [`Handle`] type that permits a more efficient
 equality check depending on your access pattern. For example, if one wanted to
-checked whether any path in a list of paths corresponded to the process' stdout
+check whether any path in a list of paths corresponded to the process' stdout
 handle, then one could build a handle once for stdout. The equality check for
 each file in the list then only requires one stat call instead of two. The code
 might look like this:

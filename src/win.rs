@@ -25,7 +25,7 @@ use winapi::winbase::{
 // https://msdn.microsoft.com/en-us/library/windows/desktop/aa363788(v=vs.85).aspx
 //
 // It gets worse. It appears that the index numbers are not always
-// guaranteed to be unqiue. Namely, ReFS uses 128 bit numbers for unique
+// guaranteed to be unique. Namely, ReFS uses 128 bit numbers for unique
 // identifiers. This requires a distinct syscall to get `FILE_ID_INFO`
 // documented here:
 // https://msdn.microsoft.com/en-us/library/windows/desktop/hh802691(v=vs.85).aspx

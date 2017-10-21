@@ -12,7 +12,7 @@ use same_file::is_same_file;
 
 # fn try_main() -> Result<(), Box<Error>> {
 assert!(is_same_file("/bin/sh", "/usr/bin/sh")?);
-#    Ok(()) 
+#    Ok(())
 # }
 #
 # fn main() {
@@ -46,9 +46,9 @@ for candidate in candidates {
         println!("{:?} is NOT stdout!", candidate);
     }
 }
-#    Ok(()) 
+#    Ok(())
 # }
-# 
+#
 # fn main() {
 #     try_main().unwrap();
 # }
@@ -95,12 +95,13 @@ mod win;
 ///
 /// A handle consumes an open file resource as long as it exists.
 ///
-/// Equality is determined by comparing inode numbers on Unix and a combination of
-/// identifier, volume serial, and file size on Windows.
-/// Note that it's possible for comparing two handles to produce a false
-/// positive on some platforms. Namely, two handles can compare equal even if
-/// the two handles *don't* point to the same file.
-/// Check the [source][] for specific implementation details.
+/// Equality is determined by comparing inode numbers on Unix and a combination
+/// of identifier, volume serial, and file size on Windows. Note that it's
+/// possible for comparing two handles to produce a false positive on some
+/// platforms. Namely, two handles can compare equal even if the two handles
+/// *don't* point to the same file. Check the [source] for specific
+/// implementation details.
+///
 /// [source]: https://github.com/BurntSushi/same-file/tree/master/src
 #[derive(Debug, Eq, PartialEq)]
 pub struct Handle(imp::Handle);
@@ -120,19 +121,19 @@ impl Handle {
     /// exist, or there were not enough permissions.
     ///
     /// [`io::Error`]: https://doc.rust-lang.org/std/io/struct.Error.html
-    /// 
+    ///
     /// # Examples
     /// Check that two paths are not the same file:
     ///
     /// ```rust,no_run
     /// # use std::error::Error;
     /// use same_file::Handle;
-    /// 
+    ///
     /// # fn try_main() -> Result<(), Box<Error>> {
     /// let source = Handle::from_path("./source")?;
     /// let target = Handle::from_path("./target")?;
     /// assert_ne!(source, target, "The files are the same.");
-    /// # Ok(()) 
+    /// # Ok(())
     /// # }
     /// #
     /// # fn main() {
@@ -146,7 +147,7 @@ impl Handle {
     /// Construct a handle from a file.
     ///
     /// # Errors
-    /// This method will return an [`io::Error`] if the metadata for 
+    /// This method will return an [`io::Error`] if the metadata for
     /// the given [`File`] cannot be obtained.
     ///
     /// [`io::Error`]: https://doc.rust-lang.org/std/io/struct.Error.html
@@ -159,19 +160,19 @@ impl Handle {
     /// # use std::error::Error;
     /// # use std::fs::File;
     /// use same_file::Handle;
-    /// 
+    ///
     /// # fn try_main() -> Result<(), Box<Error>> {
     /// let source = File::open("./source")?;
     /// let target = File::open("./target")?;
-    /// 
+    ///
     /// assert_ne!(
     ///     Handle::from_file(source)?,
     ///     Handle::from_file(target)?,
     ///     "The files are the same."
     /// );
-    /// #     Ok(()) 
+    /// #     Ok(())
     /// # }
-    /// # 
+    /// #
     /// # fn main() {
     /// #     try_main().unwrap();
     /// # }
@@ -185,20 +186,20 @@ impl Handle {
     /// # Errors
     /// This method will return an [`io::Error`] if stdin cannot
     /// be opened due to any I/O-related reason.
-    /// 
+    ///
     /// [`io::Error`]: https://doc.rust-lang.org/std/io/struct.Error.html
-    /// 
+    ///
     /// # Examples
-    /// 
+    ///
     /// ```rust
     /// # use std::error::Error;
     /// use same_file::Handle;
-    /// 
+    ///
     /// # fn try_main() -> Result<(), Box<Error>> {
     /// let stdin = Handle::stdin()?;
     /// let stdout = Handle::stdout()?;
     /// let stderr = Handle::stderr()?;
-    /// 
+    ///
     /// if stdin == stdout {
     ///     println!("stdin == stdout");
     /// }
@@ -208,10 +209,10 @@ impl Handle {
     /// if stdout == stderr {
     ///     println!("stdout == stderr");
     /// }
-    /// #         
+    /// #
     /// #     Ok(())
     /// # }
-    /// # 
+    /// #
     /// # fn main() {
     /// #     try_main().unwrap();
     /// # }
@@ -235,7 +236,7 @@ impl Handle {
     /// ```
     ///
     /// Windows:
-    /// 
+    ///
     /// ```text
     /// > example
     /// > example > result 2>&1
@@ -251,9 +252,9 @@ impl Handle {
     /// # Errors
     /// This method will return an [`io::Error`] if stdout cannot
     /// be opened due to any I/O-related reason.
-    /// 
+    ///
     /// [`io::Error`]: https://doc.rust-lang.org/std/io/struct.Error.html
-    /// 
+    ///
     /// # Examples
     /// See the example for [`stdin()`].
     ///
@@ -267,9 +268,9 @@ impl Handle {
     /// # Errors
     /// This method will return an [`io::Error`] if stderr cannot
     /// be opened due to any I/O-related reason.
-    /// 
+    ///
     /// [`io::Error`]: https://doc.rust-lang.org/std/io/struct.Error.html
-    /// 
+    ///
     /// # Examples
     /// See the example for [`stdin()`].
     ///
@@ -279,7 +280,7 @@ impl Handle {
     }
 
     /// Return a reference to the underlying file.
-    /// 
+    ///
     /// # Examples
     /// Ensure that the target file is not the same as the source one,
     /// and copy the data to it:
@@ -290,18 +291,18 @@ impl Handle {
     /// use std::io::Write;
     /// use std::fs::File;
     /// use same_file::Handle;
-    /// 
+    ///
     /// # fn try_main() -> Result<(), Box<Error>> {
     /// let source = File::open("source")?;
     /// let target = File::create("target")?;
-    /// 
+    ///
     /// let source_handle = Handle::from_file(source)?;
     /// let mut target_handle = Handle::from_file(target)?;
     /// assert_ne!(source_handle, target_handle, "The files are the same.");
-    /// 
+    ///
     /// let mut source = source_handle.as_file();
     /// let target = target_handle.as_file_mut();
-    /// 
+    ///
     /// let mut buffer = Vec::new();
     /// // data copy is simplified for the purposes of the example
     /// source.read_to_end(&mut buffer)?;
@@ -329,7 +330,7 @@ impl Handle {
     }
 
     /// Return the underlying device number of this handle.
-    /// 
+    ///
     /// Note that this only works on unix platforms.
     #[cfg(any(target_os = "redox", unix))]
     pub fn dev(&self) -> u64 {
@@ -337,7 +338,7 @@ impl Handle {
     }
 
     /// Return the underlying inode number of this handle.
-    /// 
+    ///
     /// Note that this only works on unix platforms.
     #[cfg(any(target_os = "redox", unix))]
     pub fn ino(&self) -> u64 {

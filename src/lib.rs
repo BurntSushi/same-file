@@ -369,7 +369,7 @@ pub fn is_same_file<P, Q>(
     path1: P,
     path2: Q,
 ) -> io::Result<bool> where P: AsRef<Path>, Q: AsRef<Path> {
-    Ok(try!(Handle::from_path(path1)) == try!(Handle::from_path(path2)))
+    Ok(Handle::from_path(path1)? == Handle::from_path(path2)?)
 }
 
 #[cfg(test)]

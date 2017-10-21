@@ -118,11 +118,11 @@ impl Hash for Handle {
 
 impl Handle {
     pub fn from_path<P: AsRef<Path>>(p: P) -> io::Result<Handle> {
-        let file = try!(OpenOptions::new()
+        let file = OpenOptions::new()
             .read(true)
             // Necessary in order to support opening directory paths.
             .custom_flags(FILE_FLAG_BACKUP_SEMANTICS)
-            .open(p));
+            .open(p)?;
         Handle::from_file(file)
     }
 

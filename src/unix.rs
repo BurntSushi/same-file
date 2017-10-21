@@ -58,11 +58,11 @@ impl Hash for Handle {
 
 impl Handle {
     pub fn from_path<P: AsRef<Path>>(p: P) -> io::Result<Handle> {
-        Handle::from_file(try!(OpenOptions::new().read(true).open(p)))
+        Handle::from_file(OpenOptions::new().read(true).open(p)?)
     }
 
     pub fn from_file(file: File) -> io::Result<Handle> {
-        let md = try!(file.metadata());
+        let md = file.metadata()?;
         Ok(Handle {
             file: Some(file),
             is_std: false,

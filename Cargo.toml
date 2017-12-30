@@ -1,6 +1,6 @@
 [package]
 name = "same-file"
-version = "1.0.0"  #:version
+version = "1.0.1"  #:version
 authors = ["Andrew Gallant <jamslam@gmail.com>"]
 description = """
 A simple crate for determining whether two file paths point to the same file.

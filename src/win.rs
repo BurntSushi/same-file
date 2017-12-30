@@ -8,10 +8,13 @@ use std::os::windows::io::{
 };
 use std::path::Path;
 
-use kernel32::{GetFileInformationByHandle, GetStdHandle};
-use winapi::fileapi::BY_HANDLE_FILE_INFORMATION;
-use winapi::minwindef::DWORD;
-use winapi::winbase::{
+use winapi::shared::minwindef::DWORD;
+use winapi::um::fileapi::{
+    BY_HANDLE_FILE_INFORMATION,
+    GetFileInformationByHandle,
+};
+use winapi::um::processenv::GetStdHandle;
+use winapi::um::winbase::{
     FILE_FLAG_BACKUP_SEMANTICS,
     STD_INPUT_HANDLE, STD_OUTPUT_HANDLE, STD_ERROR_HANDLE,
 };

@@ -90,7 +90,11 @@ impl Eq for Handle {}
 
 impl PartialEq for Handle {
     fn eq(&self, other: &Handle) -> bool {
-        if self.key.is_none() || other.key.is_none() {
+        // Need this branch to satisfy `Eq` since `Handle`s with `key.is_none()`
+        // wouldn't otherwise.
+        if self as *const Handle == other as *const Handle {
+            return true;
+        } else if self.key.is_none() || other.key.is_none() {
             return false;
         }
         self.key == other.key

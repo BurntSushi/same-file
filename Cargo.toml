@@ -12,15 +12,8 @@ readme = "README.md"
 keywords = ["same", "file", "equal", "inode"]
 license = "Unlicense/MIT"
 
-[target.'cfg(windows)'.dependencies.winapi]
-version = "0.3"
-features = [
-  "std",
-  "fileapi",
-  "minwindef",
-  "processenv",
-  "winbase",
-]
+[target.'cfg(windows)'.dependencies.winapi-util]
+version = "0.1.1"
 
 [dev-dependencies]
 rand = "0.4"

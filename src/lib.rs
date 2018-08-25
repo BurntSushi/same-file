@@ -69,7 +69,7 @@ See [`examples/is_stderr.rs`] for a runnable example and compare the output of:
 #![deny(missing_docs)]
 
 #[cfg(windows)]
-extern crate winapi;
+extern crate winapi_util;
 
 use std::fs::File;
 use std::io;

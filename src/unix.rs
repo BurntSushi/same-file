@@ -60,8 +60,7 @@ impl IntoRawFd for ::Handle {
 
 impl Hash for Handle {
     fn hash<H: Hasher>(&self, state: &mut H) {
-        self.dev.hash(state);
-        self.ino.hash(state);
+        self.key.hash(state);
     }
 }
 
@@ -121,7 +120,7 @@ impl Handle {
         self.key.ino
     }
 
-    pub fn as_key() -> Key {
+    pub fn as_key(&self) -> Option<Key> {
         Some(self.key.clone())
     }
 }

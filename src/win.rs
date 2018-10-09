@@ -63,8 +63,10 @@ enum HandleKind {
     Borrowed(winutil::HandleRef),
 }
 
-#[derive(Debug, Eq, PartialEq, Hash)]
-struct Key {
+/// Low level key structure
+///
+#[derive(Debug, Eq, PartialEq, Hash, Clone)]
+pub struct Key {
     volume: u64,
     index: u64,
 }
@@ -170,5 +172,9 @@ impl Handle {
             HandleKind::Owned(ref mut h) => h.as_file_mut(),
             HandleKind::Borrowed(ref mut h) => h.as_file_mut(),
         }
+    }
+
+    pub fn as_key(&self) -> Option<Key> {
+        self.key.clone()
     }
 }

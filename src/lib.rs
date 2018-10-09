@@ -80,6 +80,8 @@ use unix as imp;
 #[cfg(windows)]
 use win as imp;
 
+pub use imp::Key;
+
 #[cfg(any(target_os = "redox", unix))]
 mod unix;
 #[cfg(windows)]
@@ -341,6 +343,13 @@ impl Handle {
     #[cfg(any(target_os = "redox", unix))]
     pub fn ino(&self) -> u64 {
         self.0.ino()
+    }
+
+    /// Return the underlying file key
+    ///
+    /// Key type depends on the platform
+    pub fn as_key(&self) -> Option<imp::Key> {
+        self.0.as_key()
     }
 }
 

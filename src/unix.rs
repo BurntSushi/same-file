@@ -5,14 +5,23 @@ use std::os::unix::fs::MetadataExt;
 use std::os::unix::io::{AsRawFd, FromRawFd, IntoRawFd, RawFd};
 use std::path::Path;
 
+/// Low level key structure
+///
+#[derive(Debug, Eq, PartialEq, Hash, Clone)]
+pub struct Key {
+    /// device number
+    dev: u64,
+    /// inode
+    ino: u64,
+}
+
 #[derive(Debug)]
 pub struct Handle {
     file: Option<File>,
     // If is_std is true, then we don't drop the corresponding File since it
     // will close the handle.
     is_std: bool,
-    dev: u64,
-    ino: u64,
+    key: Key,
 }
 
 impl Drop for Handle {
@@ -29,7 +38,7 @@ impl Eq for Handle {}
 
 impl PartialEq for Handle {
     fn eq(&self, other: &Handle) -> bool {
-        (self.dev, self.ino) == (other.dev, other.ino)
+        self.key == other.key
     }
 }
 
@@ -51,8 +60,7 @@ impl IntoRawFd for ::Handle {
 
 impl Hash for Handle {
     fn hash<H: Hasher>(&self, state: &mut H) {
-        self.dev.hash(state);
-        self.ino.hash(state);
+        self.key.hash(state);
     }
 }
 
@@ -66,8 +74,10 @@ impl Handle {
         Ok(Handle {
             file: Some(file),
             is_std: false,
-            dev: md.dev(),
-            ino: md.ino(),
+            key: Key {
+                dev: md.dev(),
+                ino: md.ino(),
+            },
         })
     }
 
@@ -103,10 +113,14 @@ impl Handle {
     }
 
     pub fn dev(&self) -> u64 {
-        self.dev
+        self.key.dev
     }
 
     pub fn ino(&self) -> u64 {
-        self.ino
+        self.key.ino
+    }
+
+    pub fn as_key(&self) -> Option<Key> {
+        Some(self.key.clone())
     }
 }

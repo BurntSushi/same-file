@@ -11,6 +11,7 @@ repository = "https://github.com/BurntSushi/same-file"
 readme = "README.md"
 keywords = ["same", "file", "equal", "inode"]
 license = "Unlicense/MIT"
+exclude = ["/.travis.yml", "/appveyor.yml"]
 
 [target.'cfg(windows)'.dependencies.winapi-util]
 version = "0.1.1"

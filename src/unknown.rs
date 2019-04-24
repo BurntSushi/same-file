@@ -1,5 +1,4 @@
 use std::fs::File;
-use std::hash::{Hash, Hasher};
 use std::io;
 use std::path::Path;
 
@@ -8,21 +7,11 @@ static ERROR_MESSAGE: &str = "Unknown Architecture";
 #[derive(Debug)]
 pub struct Handle;
 
-impl Drop for Handle {
-    fn drop(&mut self) {
-    }
-}
-
 impl Eq for Handle {}
 
 impl PartialEq for Handle {
     fn eq(&self, _other: &Handle) -> bool {
         false
-    }
-}
-
-impl Hash for Handle {
-    fn hash<H: Hasher>(&self, _state: &mut H) {
     }
 }
 

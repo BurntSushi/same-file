@@ -71,6 +71,13 @@ See [`examples/is_stderr.rs`] for a runnable example and compare the output of:
 #[cfg(windows)]
 extern crate winapi_util;
 
+#[cfg(test)]
+#[macro_use]
+extern crate doc_comment;
+
+#[cfg(test)]
+doctest!("../README.md");
+
 use std::fs::File;
 use std::io;
 use std::path::Path;

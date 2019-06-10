@@ -2,8 +2,10 @@ use std::fs::File;
 use std::io;
 use std::path::Path;
 
-static ERROR_MESSAGE: &str = "Unknown Architecture";
-
+static ERROR_MESSAGE: &str = "same-file is not supported on this platform.";
+// This implementation is to allow same-file to be compiled on
+// unsupported platforms in case it was incidentally included
+// as a transitive, unused dependency
 #[derive(Debug)]
 pub struct Handle;
 
@@ -11,7 +13,7 @@ impl Eq for Handle {}
 
 impl PartialEq for Handle {
     fn eq(&self, _other: &Handle) -> bool {
-        false
+        unreachable!(ERROR_MESSAGE);
     }
 }
 
@@ -37,11 +39,11 @@ impl Handle {
     }
 
     pub fn as_file(&self) -> &File {
-        panic!(ERROR_MESSAGE);
+        unreachable!(ERROR_MESSAGE);
     }
 
     pub fn as_file_mut(&self) -> &mut File {
-        panic!(ERROR_MESSAGE);
+        unreachable!(ERROR_MESSAGE);
     }
 }
 

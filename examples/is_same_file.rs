@@ -1,11 +1,11 @@
 extern crate same_file;
 
-use std::error::Error;
+use std::io;
 use same_file::is_same_file;
 
-fn try_main() -> Result<(), Box<Error>> {
+fn try_main() -> Result<(), io::Error> {
     assert!(is_same_file("/bin/sh", "/usr/bin/sh")?);
-    Ok(()) 
+    Ok(())
 }
 
 fn main() {

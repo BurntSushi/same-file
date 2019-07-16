@@ -15,6 +15,3 @@ exclude = ["/.travis.yml", "/appveyor.yml"]
 
 [target.'cfg(windows)'.dependencies.winapi-util]
 version = "0.1.1"
-
-[dev-dependencies]
-rand = "0.4"

@@ -65,7 +65,7 @@ See [`examples/is_stderr.rs`] for a runnable example and compare the output of:
 
 */
 
-#![doc(html_root_url = "https://docs.rs/same-file/1.0.0")]
+#![allow(bare_trait_objects, unknown_lints)]
 #![deny(missing_docs)]
 
 #[cfg(windows)]
@@ -376,24 +376,31 @@ pub fn is_same_file<P, Q>(
 
 #[cfg(test)]
 mod tests {
-    extern crate rand;
-
     use std::env;
+    use std::error;
     use std::fs::{self, File};
     use std::io;
     use std::path::{Path, PathBuf};
-
-    use self::rand::Rng;
+    use std::result;
 
     use super::is_same_file;
 
-    struct TempDir(PathBuf);
+    type Result<T> = result::Result<T, Box<error::Error + Send + Sync>>;
 
-    impl TempDir {
-        fn path<'a>(&'a self) -> &'a Path {
-            &self.0
+    /// Create an error from a format!-like syntax.
+    macro_rules! err {
+        ($($tt:tt)*) => {
+            Box::<error::Error + Send + Sync>::from(format!($($tt)*))
         }
     }
+
+    /// A simple wrapper for creating a temporary directory that is
+    /// automatically deleted when it's dropped.
+    ///
+    /// We use this in lieu of tempfile because tempfile brings in too many
+    /// dependencies.
+    #[derive(Debug)]
+    struct TempDir(PathBuf);
 
     impl Drop for TempDir {
         fn drop(&mut self) {
@@ -401,12 +408,40 @@ mod tests {
         }
     }
 
+    impl TempDir {
+        /// Create a new empty temporary directory under the system's
+        /// configured temporary directory.
+        fn new() -> Result<TempDir> {
+            #![allow(deprecated)]
+
+            use std::sync::atomic::{ATOMIC_USIZE_INIT, AtomicUsize, Ordering};
+
+            static TRIES: usize = 100;
+            static COUNTER: AtomicUsize = ATOMIC_USIZE_INIT;
+
+            let tmpdir = env::temp_dir();
+            for _ in 0..TRIES {
+                let count = COUNTER.fetch_add(1, Ordering::SeqCst);
+                let path = tmpdir.join("rust-walkdir").join(count.to_string());
+                if path.is_dir() {
+                    continue;
+                }
+                fs::create_dir_all(&path).map_err(|e| {
+                    err!("failed to create {}: {}", path.display(), e)
+                })?;
+                return Ok(TempDir(path));
+            }
+            Err(err!("failed to create temp dir after {} tries", TRIES))
+        }
+
+        /// Return the underlying path to this temporary directory.
+        fn path(&self) -> &Path {
+            &self.0
+        }
+    }
+
     fn tmpdir() -> TempDir {
-        let p = env::temp_dir();
-        let mut r = self::rand::thread_rng();
-        let ret = p.join(&format!("rust-{}", r.next_u32()));
-        fs::create_dir(&ret).unwrap();
-        TempDir(ret)
+        TempDir::new().unwrap()
     }
 
     #[cfg(unix)]

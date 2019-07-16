@@ -79,11 +79,15 @@ use std::path::Path;
 use unix as imp;
 #[cfg(windows)]
 use win as imp;
+#[cfg(not(any(target_os = "redox", unix, windows)))]
+use unknown as imp;
 
 #[cfg(any(target_os = "redox", unix))]
 mod unix;
 #[cfg(windows)]
 mod win;
+#[cfg(not(any(target_os = "redox", unix, windows)))]
+mod unknown;
 
 /// A handle to a file that can be tested for equality with other handles.
 ///

@@ -105,7 +105,7 @@ mod unknown;
 /// implementation details.
 ///
 /// [source]: https://github.com/BurntSushi/same-file/tree/master/src
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Debug, Eq, PartialEq, Hash)]
 pub struct Handle(imp::Handle);
 
 impl Handle {

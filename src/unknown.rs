@@ -6,7 +6,7 @@ static ERROR_MESSAGE: &str = "same-file is not supported on this platform.";
 // This implementation is to allow same-file to be compiled on
 // unsupported platforms in case it was incidentally included
 // as a transitive, unused dependency
-#[derive(Debug)]
+#[derive(Debug, Hash)]
 pub struct Handle;
 
 impl Eq for Handle {}

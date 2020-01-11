@@ -1,4 +1,4 @@
-extern crate same_file;
+
 
 use std::io;
 use std::process;

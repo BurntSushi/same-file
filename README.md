@@ -22,12 +22,6 @@ Add this to your `Cargo.toml`:
 same-file = "1"
 ```
 
-and this to your crate root:
-
-```rust
-extern crate same_file;
-```
-
 ### Example
 
 The simplest use of this crate is to use the `is_same_file` function, which
@@ -35,8 +29,6 @@ takes two file paths and returns true if and only if they refer to the same
 file:
 
 ```rust,no_run
-extern crate same_file;
-
 use same_file::is_same_file;
 
 fn main() {

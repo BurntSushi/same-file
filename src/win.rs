@@ -1,9 +1,7 @@
 use std::fs::File;
 use std::hash::{Hash, Hasher};
 use std::io;
-use std::os::windows::io::{
-    AsRawHandle, IntoRawHandle, RawHandle,
-};
+use std::os::windows::io::{AsRawHandle, IntoRawHandle, RawHandle};
 use std::path::Path;
 
 use winapi_util as winutil;

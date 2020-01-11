@@ -3,8 +3,7 @@ same-file
 A safe and cross platform crate to determine whether two files or directories
 are the same.
 
-[![Linux build status](https://api.travis-ci.org/BurntSushi/same-file.png)](https://travis-ci.org/BurntSushi/same-file)
-[![Windows build status](https://ci.appveyor.com/api/projects/status/github/BurntSushi/same-file?svg=true)](https://ci.appveyor.com/project/BurntSushi/same-file)
+[![Build status](https://github.com/BurntSushi/same-file/workflows/ci/badge.svg)](https://github.com/BurntSushi/same-file/actions)
 [![](http://meritbadge.herokuapp.com/same-file)](https://crates.io/crates/same-file)
 
 Dual-licensed under MIT or the [UNLICENSE](http://unlicense.org).

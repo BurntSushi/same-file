@@ -1,4 +1,4 @@
-extern crate same_file;
+
 
 use std::io;
 use same_file::is_same_file;

@@ -4,7 +4,7 @@ A safe and cross platform crate to determine whether two files or directories
 are the same.
 
 [![Build status](https://github.com/BurntSushi/same-file/workflows/ci/badge.svg)](https://github.com/BurntSushi/same-file/actions)
-[![Crates.io](https://img.shields.io/crates/v/same-file.svg)](https://crates.io/crates/same-file)
+[![crates.io](https://img.shields.io/crates/v/same-file.svg)](https://crates.io/crates/same-file)
 
 Dual-licensed under MIT or the [UNLICENSE](https://unlicense.org/).
 

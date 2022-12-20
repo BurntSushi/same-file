@@ -10,7 +10,7 @@ homepage = "https://github.com/BurntSushi/same-file"
 repository = "https://github.com/BurntSushi/same-file"
 readme = "README.md"
 keywords = ["same", "file", "equal", "inode"]
-license = "Unlicense/MIT"
+license = "Unlicense OR MIT"
 exclude = ["/.github"]
 edition = "2018"
 

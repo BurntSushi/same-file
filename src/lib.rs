@@ -10,7 +10,7 @@ same file or directory:
 # use std::error::Error;
 use same_file::is_same_file;
 
-# fn try_main() -> Result<(), Box<Error>> {
+# fn try_main() -> Result<(), Box<dyn Error>> {
 assert!(is_same_file("/bin/sh", "/usr/bin/sh")?);
 #    Ok(())
 # }
@@ -31,7 +31,7 @@ might look like this:
 # use std::error::Error;
 use same_file::Handle;
 
-# fn try_main() -> Result<(), Box<Error>> {
+# fn try_main() -> Result<(), Box<dyn Error>> {
 let candidates = &[
     "examples/is_same_file.rs",
     "examples/is_stderr.rs",
@@ -131,7 +131,7 @@ impl Handle {
     /// # use std::error::Error;
     /// use same_file::Handle;
     ///
-    /// # fn try_main() -> Result<(), Box<Error>> {
+    /// # fn try_main() -> Result<(), Box<dyn Error>> {
     /// let source = Handle::from_path("./source")?;
     /// let target = Handle::from_path("./target")?;
     /// assert_ne!(source, target, "The files are the same.");
@@ -163,7 +163,7 @@ impl Handle {
     /// # use std::fs::File;
     /// use same_file::Handle;
     ///
-    /// # fn try_main() -> Result<(), Box<Error>> {
+    /// # fn try_main() -> Result<(), Box<dyn Error>> {
     /// let source = File::open("./source")?;
     /// let target = File::open("./target")?;
     ///
@@ -197,7 +197,7 @@ impl Handle {
     /// # use std::error::Error;
     /// use same_file::Handle;
     ///
-    /// # fn try_main() -> Result<(), Box<Error>> {
+    /// # fn try_main() -> Result<(), Box<dyn Error>> {
     /// let stdin = Handle::stdin()?;
     /// let stdout = Handle::stdout()?;
     /// let stderr = Handle::stderr()?;
@@ -294,7 +294,7 @@ impl Handle {
     /// use std::fs::File;
     /// use same_file::Handle;
     ///
-    /// # fn try_main() -> Result<(), Box<Error>> {
+    /// # fn try_main() -> Result<(), Box<dyn Error>> {
     /// let source = File::open("source")?;
     /// let target = File::create("target")?;
     ///
@@ -386,12 +386,12 @@ mod tests {
 
     use super::is_same_file;
 
-    type Result<T> = result::Result<T, Box<error::Error + Send + Sync>>;
+    type Result<T> = result::Result<T, Box<dyn error::Error + Send + Sync>>;
 
     /// Create an error from a format!-like syntax.
     macro_rules! err {
         ($($tt:tt)*) => {
-            Box::<error::Error + Send + Sync>::from(format!($($tt)*))
+            Box::<dyn error::Error + Send + Sync>::from(format!($($tt)*))
         }
     }
 

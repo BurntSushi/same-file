@@ -12,7 +12,8 @@ readme = "README.md"
 keywords = ["same", "file", "equal", "inode"]
 license = "Unlicense/MIT"
 exclude = ["/.github"]
-edition = "2018"
+edition = "2021"
+rust-version = "1.60"
 
 [target.'cfg(windows)'.dependencies.winapi-util]
 version = "0.1.1"

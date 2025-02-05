@@ -75,16 +75,16 @@ use std::fs::File;
 use std::io;
 use std::path::Path;
 
-#[cfg(any(target_os = "redox", unix))]
+#[cfg(unix)]
 use crate::unix as imp;
-#[cfg(not(any(target_os = "redox", unix, windows)))]
+#[cfg(not(any(unix, windows)))]
 use unknown as imp;
 #[cfg(windows)]
 use win as imp;
 
-#[cfg(any(target_os = "redox", unix))]
+#[cfg(unix)]
 mod unix;
-#[cfg(not(any(target_os = "redox", unix, windows)))]
+#[cfg(not(any(unix, windows)))]
 mod unknown;
 #[cfg(windows)]
 mod win;
@@ -334,7 +334,7 @@ impl Handle {
     /// Return the underlying device number of this handle.
     ///
     /// Note that this only works on unix platforms.
-    #[cfg(any(target_os = "redox", unix))]
+    #[cfg(unix)]
     pub fn dev(&self) -> u64 {
         self.0.dev()
     }
@@ -342,7 +342,7 @@ impl Handle {
     /// Return the underlying inode number of this handle.
     ///
     /// Note that this only works on unix platforms.
-    #[cfg(any(target_os = "redox", unix))]
+    #[cfg(unix)]
     pub fn ino(&self) -> u64 {
         self.0.ino()
     }

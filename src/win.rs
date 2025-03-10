@@ -34,7 +34,7 @@ use winapi_util as winutil;
 // 2. LLVM has a bug where they fetch the id of a file and continue to use
 //    it even after the handle has been closed, so that uniqueness is no
 //    longer guaranteed (when `nFileIndex{Low,High}` are unique).
-//    bug report: http://lists.llvm.org/pipermail/llvm-bugs/2014-December/037218.html
+//    bug report: https://lists.llvm.org/pipermail/llvm-bugs/2014-December/037218.html
 //
 // All said and done, checking whether two files are the same on Windows
 // seems quite tricky. Moreover, even if the code is technically incorrect,

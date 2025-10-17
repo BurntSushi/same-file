@@ -20,7 +20,7 @@ impl Drop for Handle {
         if self.is_std {
             // unwrap() will not panic. Since we were able to open an
             // std stream successfully, then `file` is guaranteed to be Some()
-            self.file.take().unwrap().into_raw_fd();
+            let _ = self.file.take().unwrap().into_raw_fd();
         }
     }
 }

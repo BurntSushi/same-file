@@ -20,7 +20,7 @@ use winapi_util as winutil;
 // documented here:
 // https://msdn.microsoft.com/en-us/library/windows/desktop/hh802691(v=vs.85).aspx
 //
-// It seems straight-forward enough to modify this code to use
+// It seems straightforward enough to modify this code to use
 // `FILE_ID_INFO` when available (minimum Windows Server 2012), but I don't
 // have access to such Windows machines.
 //

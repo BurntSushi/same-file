@@ -385,6 +385,7 @@ mod tests {
     use std::result;
 
     use super::is_same_file;
+    use super::Handle;
 
     type Result<T> = result::Result<T, Box<dyn error::Error + Send + Sync>>;
 
@@ -489,6 +490,52 @@ mod tests {
     // systems where such things aren't guaranteed to be unique.
     //
     // Alas, I don't know how to create those environmental conditions. ---AG
+
+    #[test]
+    fn from_path_not_found() {
+        let tdir = tmpdir();
+        let dir = tdir.path();
+        let err = Handle::from_path(dir.join("does_not_exist")).unwrap_err();
+        assert_eq!(err.kind(), io::ErrorKind::NotFound);
+    }
+
+    #[test]
+    fn is_same_file_not_found() {
+        let tdir = tmpdir();
+        let dir = tdir.path();
+        File::create(dir.join("a")).unwrap();
+        let err = is_same_file(dir.join("a"), dir.join("does_not_exist")).unwrap_err();
+        assert_eq!(err.kind(), io::ErrorKind::NotFound);
+    }
+
+    #[test]
+    fn handle_eq_hard_link() {
+        let tdir = tmpdir();
+        let dir = tdir.path();
+        File::create(dir.join("a")).unwrap();
+        fs::hard_link(dir.join("a"), dir.join("alink")).unwrap();
+        let h1 = Handle::from_path(dir.join("a")).unwrap();
+        let h2 = Handle::from_path(dir.join("alink")).unwrap();
+        assert_eq!(h1, h2);
+    }
+
+    #[test]
+    fn handle_eq_symlink() {
+        let tdir = tmpdir();
+        let dir = tdir.path();
+        File::create(dir.join("a")).unwrap();
+        soft_link_file(dir.join("a"), dir.join("alink")).unwrap();
+        let h1 = Handle::from_path(dir.join("a")).unwrap();
+        let h2 = Handle::from_path(dir.join("alink")).unwrap();
+        assert_eq!(h1, h2);
+    }
+
+    #[test]
+    fn stdio_identity() {
+        assert_eq!(Handle::stdin().unwrap(), Handle::stdin().unwrap());
+        assert_eq!(Handle::stdout().unwrap(), Handle::stdout().unwrap());
+        assert_eq!(Handle::stderr().unwrap(), Handle::stderr().unwrap());
+    }
 
     #[test]
     fn same_file_trivial() {

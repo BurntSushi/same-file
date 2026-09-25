@@ -569,4 +569,18 @@ mod tests {
         fn assert_sync<T: Sync>() {}
         assert_sync::<super::Handle>();
     }
+
+    // Regression test for #55: `IntoRawFd::into_raw_fd` on a std-stream
+    // `Handle` (stdin/stdout/stderr) takes the underlying file out of the
+    // handle before returning it to the caller. The handle is then dropped
+    // by the caller, and its `Drop` impl used to unconditionally unwrap
+    // that already-emptied `Option`, panicking instead of doing nothing.
+    #[cfg(unix)]
+    #[test]
+    fn stdin_into_raw_fd_does_not_panic_on_drop() {
+        use std::os::unix::io::IntoRawFd;
+
+        let handle = super::Handle::stdin().unwrap();
+        let _fd = handle.into_raw_fd();
+    }
 }

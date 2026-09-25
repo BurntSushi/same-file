@@ -18,9 +18,15 @@ pub struct Handle {
 impl Drop for Handle {
     fn drop(&mut self) {
         if self.is_std {
-            // unwrap() will not panic. Since we were able to open an
-            // std stream successfully, then `file` is guaranteed to be Some()
-            let _ = self.file.take().unwrap().into_raw_fd();
+            // `file` is usually guaranteed to be Some() here, since we were
+            // able to open an std stream successfully. But `IntoRawFd::
+            // into_raw_fd` also takes `file` out (see below), and it hands
+            // ownership of `self` back to the caller instead of dropping
+            // it, so by the time this destructor runs, `file` may already
+            // be None. Tolerate that instead of unwrapping and panicking.
+            if let Some(file) = self.file.take() {
+                let _ = file.into_raw_fd();
+            }
         }
     }
 }

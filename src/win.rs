@@ -65,6 +65,7 @@ enum HandleKind {
 struct Key {
     volume: u64,
     index: u64,
+    size: u64,
 }
 
 impl Eq for Handle {}
@@ -140,6 +141,7 @@ impl Handle {
             key: Some(Key {
                 volume: info.volume_serial_number(),
                 index: info.file_index(),
+                size: info.file_size(),
             }),
         }
     }
@@ -168,5 +170,19 @@ impl Handle {
             HandleKind::Owned(ref mut h) => h.as_file_mut(),
             HandleKind::Borrowed(ref mut h) => h.as_file_mut(),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn key_equality_checks_size() {
+        let k1 = Key { volume: 1, index: 2, size: 100 };
+        let k2 = Key { volume: 1, index: 2, size: 200 };
+        let k3 = Key { volume: 1, index: 2, size: 100 };
+        assert_ne!(k1, k2);
+        assert_eq!(k1, k3);
     }
 }

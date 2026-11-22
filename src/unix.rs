@@ -37,7 +37,7 @@ impl AsRawFd for crate::Handle {
     fn as_raw_fd(&self) -> RawFd {
         // unwrap() will not panic. Since we were able to open the
         // file successfully, then `file` is guaranteed to be Some()
-        self.0.file.as_ref().take().unwrap().as_raw_fd()
+        self.0.file.as_ref().unwrap().as_raw_fd()
     }
 }
 
@@ -93,13 +93,13 @@ impl Handle {
     pub fn as_file(&self) -> &File {
         // unwrap() will not panic. Since we were able to open the
         // file successfully, then `file` is guaranteed to be Some()
-        self.file.as_ref().take().unwrap()
+        self.file.as_ref().unwrap()
     }
 
     pub fn as_file_mut(&mut self) -> &mut File {
         // unwrap() will not panic. Since we were able to open the
         // file successfully, then `file` is guaranteed to be Some()
-        self.file.as_mut().take().unwrap()
+        self.file.as_mut().unwrap()
     }
 
     pub fn dev(&self) -> u64 {

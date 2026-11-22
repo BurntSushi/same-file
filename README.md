@@ -1,6 +1,6 @@
 same-file
 =========
-A safe and cross platform crate to determine whether two files or directories
+A safe and cross-platform crate to determine whether two files or directories
 are the same.
 
 [![Build status](https://github.com/BurntSushi/same-file/workflows/ci/badge.svg)](https://github.com/BurntSushi/same-file/actions)

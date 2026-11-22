@@ -13,7 +13,7 @@ impl Eq for Handle {}
 
 impl PartialEq for Handle {
     fn eq(&self, _other: &Handle) -> bool {
-        unreachable!(ERROR_MESSAGE);
+        unreachable!("{}", ERROR_MESSAGE);
     }
 }
 
@@ -39,14 +39,36 @@ impl Handle {
     }
 
     pub fn as_file(&self) -> &File {
-        unreachable!(ERROR_MESSAGE);
+        unreachable!("{}", ERROR_MESSAGE);
     }
 
     pub fn as_file_mut(&self) -> &mut File {
-        unreachable!(ERROR_MESSAGE);
+        unreachable!("{}", ERROR_MESSAGE);
     }
 }
 
 fn error<T>() -> io::Result<T> {
     Err(io::Error::new(io::ErrorKind::Other, ERROR_MESSAGE))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_unsupported_error() {
+        assert!(Handle::from_path(".").is_err());
+        assert_eq!(
+            Handle::from_path(".").unwrap_err().to_string(),
+            ERROR_MESSAGE
+        );
+    }
+
+    #[test]
+    #[should_panic(expected = "same-file is not supported on this platform.")]
+    fn test_unreachable_panic() {
+        let h1 = Handle;
+        let h2 = Handle;
+        let _ = h1 == h2;
+    }
 }
